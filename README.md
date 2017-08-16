@@ -1,8 +1,25 @@
-# js13k-toolkit
-A simple little tool for developing a JS game while keeping it under 13kb zipped
+# Wanderer
+My entry for the 2017 [js13k competition](http://2017.js13kgames.com/). I used the [js13k-toolkit](https://github.com/lucaspenney/js13k-toolkit) as a starting point.
 
-Run `gulp init` to create a simple folder structure.
+## Install
+```
+git clone https://github.com/grind086/js13k-wanderer.git
+npm install
+```
 
-Run `gulp watch --silent` (silent optional) to have gulp continuously build your project and check it's compressed zip file size. A warning will be printed if you exceed 13312 bytes (13kb) to ensure you're under the limit for the js13kgames competition.
+## Build
+```
+gulp build
+// or
+gulp watch
+```
 
-Feel free to edit the gulpfile to suit your specific needs.
+The minified files are put in the `build` directory, and the zipped version will be in `dist`. A warning is displayed if the result is greater than 13kb. To run the game
+simply serve the files in the `build` directory
+
+## Run
+Simply serve the files in the `build` directory on a local server. For example using [http-server](https://github.com/indexzero/http-server):
+
+```
+http-server ./build
+```

@@ -26,21 +26,6 @@ gulp.task('watch', (done) => {
 	gulp.watch('./src/assets/**/*', gulp.series('build-assets', 'check'));
 });
 
-gulp.task('init', (done) => {
-	//Create our directory structure
-	mkdirp('./src', function (err) {
-		mkdirp('./src/js', function (err) {
-			mkdirp('./src/html', function (err) {
-				mkdirp('./src/css', function (err) {
-					mkdirp('./src/assets', function (err) {
-						done();
-					});
-				});
-			});
-		});
-	});
-});
-
 gulp.task('build-js', (done) => {
 	return gulp.src('./src/js/**/*.js')
 	.pipe(concat('game.js'))
