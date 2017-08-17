@@ -2,10 +2,11 @@
  * Generates 2D simplex noise
  */
 define('simplex', ['lcg'], (LCG) => {
-    // Skew factors
+    // Skew factors for the simplex grid
     const F2 = 0.5 * (Math.sqrt(3) - 1);
     const G2 = (3 - Math.sqrt(3)) / 6;
 
+    // Gradient vector table
     const grad = [
         [ 1, 1], [-1, 1], [ 1,-1],
         [-1,-1], [ 1, 0], [-1, 0],
@@ -14,20 +15,26 @@ define('simplex', ['lcg'], (LCG) => {
 
     /**
      * Simplex noise generator based on http://weber.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
-     * by Stefan Gustavson
+     * by Stefan Gustavson and Peter Eastman
      * @constructor
-     * @param rng - A PRNG that returns numbers in the range 0 to 1
+     * @param {number} seed
      */
     class Simplex {
         constructor(seed) {
+            /**
+             * @property {Uint8Array} perm - The permutation table
+             */
             const perm = this.perm = new Uint8Array(512);
+
+            /**
+             * @property {Uint8Array} perm9 - The permutation table mod 9. This is used to look up the
+             *      proper gradient vector.
+             */
             const perm9 = this.perm9 = new Uint8Array(512);
 
+            // Build the permutation table
             const rng = new LCG(seed);
-
-            // Build a permutation table
             for (let i = 0, n; i < 256; i++) {
-                // TODO: Seedable? (LCG or Alea)
                 n = Math.floor(256 * rng.random()) & 255;
 
                 perm[i]  = perm[i + 256]  = n;
@@ -38,7 +45,8 @@ define('simplex', ['lcg'], (LCG) => {
         /**
          * Returns a coherent noise value for the given coordinates.
          * @param {number} x 
-         * @param {number} y 
+         * @param {number} y
+         * @returns {number}
          */
         getValue(x, y) {
             const perm = this.perm;
@@ -101,6 +109,16 @@ define('simplex', ['lcg'], (LCG) => {
             return 70 * (n0 + n1 + n2);
         }
 
+        /**
+         * Create a value using fractional Brownian motion. For a single octave this is
+         * equivalent to just calling `Simplex.getValue`.
+         * @param {number} x 
+         * @param {number} y 
+         * @param {number} octaves 
+         * @param {number} persistence 
+         * @param {number} lacunarity
+         * @returns {number}
+         */
         fbm(x, y, octaves, persistence, lacunarity) {
             let val = 0;
             let max = 0;
@@ -116,6 +134,47 @@ define('simplex', ['lcg'], (LCG) => {
             }
 
             return val / max;
+        }
+
+        /**
+         * Generates an `ImageData`
+         * @param {number} width - Texture width
+         * @param {number} height - Texture height
+         * @param {number} x0 - x offset
+         * @param {number} y0 - y offset
+         * @param {number} scale - Coordinate scale
+         * @param {number} octaves - fbm octaves
+         * @param {number} persistence - fbm persistence
+         * @param {number} lacunarity - fbm lacunarity
+         * @returns {ImageData}
+         */
+        texture(width, height, x0, y0, scale, octaves, persistence, lacunarity) {
+            const imgData = new ImageData(800, 600);
+            const data = imgData.data;
+
+            let i = 0;
+            for (let y = 0; y < 600; y++) {
+                for (let x = 0; x < 800; x++) {
+                    const val = Math.floor(
+                        this.fbm(
+                            (x + x0) * scale,
+                            (y + y0) * scale,
+                            octaves,
+                            persistence,
+                            lacunarity
+                        ) * 128 + 128
+                    );
+
+                    data[i    ] = val;
+                    data[i + 1] = val;
+                    data[i + 2] = val;
+                    data[i + 3] = 255;
+
+                    i += 4;
+                }
+            }
+
+            return imgData;
         }
     }
 
