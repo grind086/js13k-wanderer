@@ -1,6 +1,6 @@
 {
-  "name": "js13k-toolkit",
-  "version": "2.0.0",
+  "name": "js13k-wanderer",
+  "version": "0.0.1",
   "description": "A simple tool for developing a JS game while keeping it under 13kb zipped",
   "main": "gulpfile.js",
   "scripts": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucaspenney/js13k-toolkit.git"
+    "url": "https://github.com/grind086/js13k-wanderer.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lucaspenney/js13k-toolkit/issues"
+    "url": "https://github.com/grind086/js13k-wanderer/issues"
   },
   "dependencies": {},
   "devDependencies": {
