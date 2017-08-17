@@ -28,9 +28,9 @@ gulp.task('watch', (done) => {
 
 gulp.task('build-js', (done) => {
 	return gulp.src('./src/js/**/*.js')
-	.pipe(concat('game.js'))
-	.pipe(minify())
-	.pipe(gulp.dest('./build/'));
+		.pipe(concat('game.js'))
+		.pipe(minify())
+		.pipe(gulp.dest('./build/'));
 });
 
 gulp.task('build-html', (done) => {
